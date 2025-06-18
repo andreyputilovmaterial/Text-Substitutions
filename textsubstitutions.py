@@ -2,6 +2,7 @@ import re
 from datetime import datetime
 import argparse
 from pathlib import Path
+import codecs
 
 
 
@@ -16,6 +17,25 @@ def process(inp,patterns):
     for line in patterns:
         result = re.sub(line['pattern'],line['replacement'],result,flags=re.I|re.MULTILINE)
     return result
+
+
+def detect_encoding(path, default='utf-8'):
+    """Adapted from https://stackoverflow.com/questions/13590749/reading-unicode-file-data-with-bom-chars-in-python/24370596#24370596 """
+
+    with open(path, 'rb') as f:
+        raw = f.read(4)    # will read less if the file is smaller
+    # BOM_UTF32_LE's start is equal to BOM_UTF16_LE so need to try the former first
+    for enc, boms in \
+            ('utf-8-sig', (codecs.BOM_UTF8,)), \
+            ('utf-32', (codecs.BOM_UTF32_LE, codecs.BOM_UTF32_BE)), \
+            ('utf-16', (codecs.BOM_UTF16_LE, codecs.BOM_UTF16_BE)):
+        for bom in boms:
+            if raw.startswith(bom):
+                # return enc, bom
+                return enc
+    # return default, None
+    return default
+
 
 
 
@@ -63,7 +83,8 @@ if __name__ == '__main__':
 
     data = None
     #with open(inp_filename,'r',encoding='utf-8') as f:
-    with open(inp_filename,'r') as f:
+    encoding = detect_encoding(inp_filename)
+    with open(inp_filename,'r',encoding=encoding) as f:
         data = f.read()
         f.close()
     
@@ -72,7 +93,7 @@ if __name__ == '__main__':
     out_filename = inp_filename
 
     print('{script_name}: saving as "{out_filename}"'.format(out_filename=out_filename,script_name=script_name))
-    with open(out_filename, "w") as outfile:
+    with open(out_filename, "w",encoding=encoding) as outfile:
         outfile.write(result)
 
     time_finish = datetime.now()

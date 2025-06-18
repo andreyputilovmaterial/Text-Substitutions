@@ -2,7 +2,10 @@
 
 
 
+@REM warning: command length is limited by 8191 characters, and pattern is a part of this
+@REM split into several patterns and called subsequently if bigger chunk of replacements is needed
 set "PATTERN=BundleAwarePlan:DisneyBundlePlanAware,BundleSub:DisneyBundleSubs,DV_BundleSubFinal:DV_DisneyBundleSubFinal,DV_BundleSubFinalTotal:DV_BundleSubFinalTotalYN,DV_BundleSubPlanRebaseT:DV_BundleSubTypeRebaseT,DV_DisBundleIntent:DV_BundleIntentTrended,DV_DisBundleIntentFull:DV_BundleIntentTrendedFull,DV_DisBundleHeadroomHis:DV_BundleHeadroomHis"
+
 
 
 REM 302_TRun_HuluMainFile.mrs
